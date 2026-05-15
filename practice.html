@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KC Diamonds — Week 2 Practice Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:      #1B2A6B;
+    --navy-dark: #111c4a;
+    --cyan:      #5BC8E8;
+    --cyan-dim:  #3da8c8;
+    --gold:      #A87C3A;
+    --gold-light:#c99a4e;
+    --bg:        #0a0c14;
+    --surface:   #111828;
+    --surface2:  #18223a;
+    --border:    #1e2d50;
+    --text:      #e8edf8;
+    --muted:     #7a8db0;
+    --accent:    #5BC8E8;
+  }
+  [data-theme="light"] {
+    --bg:       #f0f3fa;
+    --surface:  #ffffff;
+    --surface2: #e4eaf5;
+    --border:   #c8d3ea;
+    --text:     #0e1626;
+    --muted:    #4a5a80;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background .3s, color .3s;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy-dark);
+    border-bottom: 3px solid var(--cyan);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 76px;
+  }
+  [data-theme="light"] header { background: var(--navy); }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.6rem;
+    letter-spacing: .05em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .team-name span { color: var(--cyan); }
+  .header-meta {
+    font-size: .72rem;
+    color: rgba(255,255,255,.55);
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .badge-tournament {
+    background: var(--cyan);
+    color: var(--navy-dark);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: .78rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border-radius: 3px;
+  }
+  .theme-toggle {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: .78rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: .04em;
+    transition: background .2s;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,.2); }
+
+  /* ── LAYOUT ── */
+  main { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* ── FOCUS BANNER ── */
+  .focus-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold-light);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    align-items: center;
+  }
+  .focus-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: .7rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+  }
+  .focus-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: .78rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    color: var(--text);
+  }
+  .pill.hit   { border-color: var(--gold-light); color: var(--gold-light); }
+  .pill.field { border-color: var(--cyan);        color: var(--cyan); }
+  .pill.iq    { border-color: #e05a8a;             color: #e05a8a; }
+
+  /* ── SECTION HEADERS ── */
+  .section-head {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 32px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-head::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .tl-block {
+    padding: 11px 6px;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: .74rem;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    color: #fff;
+  }
+  .tl-block .tl-time { font-size: .62rem; font-weight: 600; opacity: .65; margin-top: 3px; }
+  .tl-warm  { background: #1a3a5c; }
+  .tl-cage1 { background: #2a3c1a; }
+  .tl-cage2 { background: #22300f; }
+  .tl-bunt  { background: #3a1f4a; }
+  .tl-field { background: #0f2d3a; }
+  .tl-iq    { background: #3a1428; }
+
+  /* ── PHASE CARDS ── */
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .phase-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 18px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background .15s;
+  }
+  .phase-card-head:hover { background: var(--surface2); }
+  .phase-card.open .phase-card-head { border-bottom-color: var(--border); }
+  .phase-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .phase-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .phase-time-badge {
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: .06em;
+    text-align: right;
+  }
+  .chevron { font-size: .9rem; color: var(--muted); transition: transform .25s; }
+  .phase-card.open .chevron { transform: rotate(180deg); }
+  .phase-body { display: none; padding: 18px; }
+  .phase-card.open .phase-body { display: block; }
+
+  /* ── DRILL BLOCKS ── */
+  .drill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .drill:last-child { margin-bottom: 0; }
+  .drill-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .drill-num {
+    background: var(--navy);
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: .78rem;
+    padding: 2px 7px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: .05em;
+  }
+  .drill-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .drill-tag {
+    font-size: .67rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+  .tag-hit   { border-color: var(--gold-light); color: var(--gold-light); }
+  .tag-field { border-color: var(--cyan);        color: var(--cyan); }
+  .tag-iq    { border-color: #e05a8a;             color: #e05a8a; }
+  .tag-bunt  { border-color: #b07cf0;             color: #b07cf0; }
+
+  .drill p {
+    font-size: .875rem;
+    line-height: 1.65;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .drill p:last-child { margin-bottom: 0; }
+
+  .cue-box {
+    background: var(--bg);
+    border-left: 3px solid var(--gold-light);
+    border-radius: 0 6px 6px 0;
+    padding: 9px 13px;
+    margin-top: 10px;
+    font-size: .83rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .cue-box strong {
+    color: var(--gold-light);
+    font-style: normal;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* ── ROTATION GRID ── */
+  .rotation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .rotation-lane {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--cyan);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .lane-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 4px;
+  }
+  .lane-name { font-weight: 700; font-size: .9rem; margin-bottom: 4px; }
+  .lane-detail { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── SPLIT GRID ── */
+  .split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .split-group {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .split-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 5px;
+  }
+
+  /* ── WARMUP LIST ── */
+  .warmup-list { list-style: none; }
+  .warmup-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .875rem;
+    line-height: 1.55;
+  }
+  .warmup-list li:last-child { border-bottom: none; }
+  .warmup-list li::before { content: '▸'; color: var(--cyan); flex-shrink: 0; margin-top: 2px; }
+
+  /* ── SCENARIO ── */
+  .scenario {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+  }
+  .scenario-q {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: .95rem;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .scenario-q .qnum {
+    background: #e05a8a;
+    color: #fff;
+    font-size: .7rem;
+    padding: 2px 6px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .scenario-a { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+  .scenario-a strong { color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: .75rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  footer strong { color: var(--text); }
+
+  /* ── RESPONSIVE ── */
+
+  /* ── TABLET (≤768px) ── */
+  @media (max-width: 768px) {
+    main { padding: 20px 16px 50px; }
+
+    .focus-banner { padding: 14px 16px; gap: 8px 12px; }
+    .focus-pills { gap: 5px; }
+    .pill { font-size: .74rem; padding: 3px 10px; }
+
+    .rotation-grid { grid-template-columns: 1fr; gap: 8px; }
+
+    .split-grid { grid-template-columns: 1fr; }
+
+    .drill { padding: 12px 13px; }
+    .drill-name { font-size: .92rem; }
+
+    .phase-card-head { padding: 13px 15px; gap: 10px; }
+    .phase-card-title { font-size: .97rem; }
+
+    .scenario { padding: 11px 14px; }
+    .scenario-q { font-size: .88rem; }
+  }
+
+  /* ── MOBILE (≤600px) ── */
+  @media (max-width: 600px) {
+    /* Header */
+    header { padding: 0 14px; min-height: 62px; gap: 10px; }
+    .logo-img { width: 44px; height: 44px; }
+    .team-name { font-size: 1.1rem; }
+    .header-meta { font-size: .65rem; }
+    .badge-tournament { display: none; }
+    .theme-toggle { padding: 5px 9px; font-size: .72rem; }
+
+    /* Timeline — 3 columns on mobile */
+    .timeline { grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .tl-block { padding: 8px 4px; font-size: .67rem; }
+    .tl-block .tl-time { font-size: .58rem; }
+
+    /* Focus banner */
+    .focus-banner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 13px 14px; }
+    .pill { font-size: .72rem; padding: 3px 9px; }
+
+    /* Phase cards */
+    .phase-card-head { padding: 12px 13px; gap: 9px; }
+    .phase-card-title { font-size: .9rem; }
+    .phase-time-badge { display: none; }
+    .phase-body { padding: 14px 13px; }
+
+    /* Rotation lanes — stack */
+    .rotation-grid { grid-template-columns: 1fr; gap: 7px; margin-bottom: 12px; }
+    .rotation-lane { padding: 10px 12px; }
+    .lane-name { font-size: .85rem; }
+    .lane-detail { font-size: .75rem; }
+
+    /* Drills */
+    .drill { padding: 11px 12px; margin-bottom: 10px; }
+    .drill-header { flex-wrap: wrap; gap: 6px; }
+    .drill-name { font-size: .88rem; width: 100%; order: 2; }
+    .drill-num { order: 1; }
+    .drill-tag { order: 3; }
+    .drill p { font-size: .83rem; }
+    .cue-box { font-size: .8rem; padding: 8px 11px; }
+
+    /* Split grid — stack */
+    .split-grid { grid-template-columns: 1fr; gap: 8px; }
+    .split-group { padding: 10px 12px; }
+
+    /* Scenarios */
+    .scenario { padding: 10px 12px; margin-bottom: 8px; }
+    .scenario-q { font-size: .84rem; gap: 6px; }
+    .scenario-a { font-size: .8rem; }
+
+    /* Warmup */
+    .warmup-list li { font-size: .83rem; padding: 8px 0; }
+
+    /* Section heads */
+    .section-head { font-size: .88rem; margin: 24px 0 10px; }
+
+    /* Footer */
+    footer { padding: 18px 14px; font-size: .72rem; }
+  }
+
+  /* ── VERY SMALL (≤380px) ── */
+  @media (max-width: 380px) {
+    .team-name { font-size: .98rem; }
+    .logo-img { width: 38px; height: 38px; }
+    .tl-block { font-size: .6rem; padding: 7px 2px; }
+    .pill { font-size: .68rem; padding: 2px 7px; }
+    .phase-card-title { font-size: .84rem; }
+    .drill-name { font-size: .82rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img class="logo-img" src="data:image/png;base64,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" alt="KC Diamonds Logo" />
+    <div>
+      <div class="team-name">KC <span>Diamonds</span></div>
+      <div class="header-meta">14U Jr · Week 2 Practice Plan</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge-tournament">🏆 Tournament Week</div>
+    <button class="theme-toggle" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="focus-banner">
+    <div class="focus-label">This Week's Focus</div>
+    <div class="focus-pills">
+      <span class="pill hit">⚡ Timing / Off-Speed Recognition</span>
+      <span class="pill field">👟 Fielding Footwork</span>
+      <span class="pill iq">🧠 Game Situations &amp; Decision-Making</span>
+    </div>
+  </div>
+
+  <div class="section-head">Practice Timeline — 2 Hours</div>
+  <div class="timeline">
+    <div class="tl-block tl-warm">Warm-Up<div class="tl-time">0:00–0:15</div></div>
+    <div class="tl-block tl-cage1">Cage Rot. 1<div class="tl-time">0:15–0:45</div></div>
+    <div class="tl-block tl-cage2">Cage Rot. 2<div class="tl-time">0:45–1:07</div></div>
+    <div class="tl-block tl-bunt">Bunting<div class="tl-time">1:07–1:15</div></div>
+    <div class="tl-block tl-field">Fielding<div class="tl-time">1:15–1:35</div></div>
+    <div class="tl-block tl-iq">Game IQ<div class="tl-time">1:35–2:00</div></div>
+  </div>
+
+  <!-- PHASE 1 — WARM-UP -->
+  <div class="phase-card open">
+    <div class="phase-card-head" onclick="toggle(this)">
+      <div class="phase-dot" style="background:#5BC8E8"></div>
+      <div class="phase-card-title">Phase 1 — Warm-Up</div>
+      <div class="phase-time-badge">0:00–0:15 · 15 min · All 12</div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="phase-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px;">Fixed every week. Same sequence, same energy. Get their feet warm — everything else follows from there.</p>
+      <ul class="warmup-list">
+        <li><strong>Jog + High Knees + Butt Kicks</strong> — 2 laps of the 70×40 space. Calf-to-quad progression, nothing skipped.</li>
+        <li><strong>Arm Circles + Shoulder Activation</strong> — forward/backward, internal/external rotation. Shoulder health before any throw or swing.</li>
+        <li><strong>Lateral Shuffles + Drop Steps + 10 Dry Swings</strong> — hips first, then close with dry swings. Prime the pattern before they ever see a ball.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 2 — CAGE ROTATION 1 -->
+  <div class="phase-card open">
+    <div class="phase-card-head" onclick="toggle(this)">
+      <div class="phase-dot" style="background:#7fc45a"></div>
+      <div class="phase-card-title">Phase 2 — Cage Rotation 1</div>
+      <div class="phase-time-badge">0:15–0:45 · 30 min · All 12</div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="phase-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">All stations run simultaneously. No waiting. Groups rotate every 8–10 pitches in Lane 1.</p>
+      <div class="rotation-grid">
+        <div class="rotation-lane">
+          <div class="lane-label">Lane 1 — Coach Mo</div>
+          <div class="lane-name">Situational Live BP</div>
+          <div class="lane-detail">3 girls rotating · 8–10 pitches each<br>Count starts 1-1 for every AB</div>
+        </div>
+        <div class="rotation-lane">
+          <div class="lane-label">Lane 2 — Self-Directed</div>
+          <div class="lane-name">Timing Off-Bounce</div>
+          <div class="lane-detail">3 girls · Tennis ball, partner-dropped<br>Focus: load trigger &amp; hip fire</div>
+        </div>
+        <div class="rotation-lane">
+          <div class="lane-label">Tees A / B / C — Coach Darian</div>
+          <div class="lane-name">Inside-Out Contact</div>
+          <div class="lane-detail">2 girls per tee · Coach floats<br>Inside pitch only — fight the cast</div>
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D1</span>
+          <span class="drill-name">Situational Live BP — Count Awareness</span>
+          <span class="drill-tag tag-hit">Hitting</span>
+        </div>
+        <p>Coach Mo pitches from Lane 1 the entire session. Every at-bat starts 1-1. Before each pitch, Mo calls the count out loud. Girls must decide — hunt fastball, protect, or go off-speed — before the ball leaves his hand. No mindless hacks.</p>
+        <p>This is the tournament prep rep. The goal is a decision, not just contact. Each girl takes 8–10 pitches, steps out, and the next girl steps in immediately.</p>
+        <div class="cue-box">
+          <strong>Coach Mo Cue</strong>
+          "What's your job right now?" — ask it before every single pitch. If she can't answer, the pitch doesn't happen.
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D2</span>
+          <span class="drill-name">Load &amp; Launch Off Bounce — Timing Trigger</span>
+          <span class="drill-tag tag-hit">Hitting</span>
+        </div>
+        <p>Lane 2. Partner drops tennis ball from shoulder height; hitter loads on the drop, fires hips on the bounce. The bounce is the changeup — unpredictable timing forces them to wait back rather than muscle through early.</p>
+        <p>Think of it like a visual metronome they can't cheat: instead of syncing to a beat, they're syncing to a cue that moves differently every rep. Partner inconsistency actually helps — it mimics real pitch variety.</p>
+        <div class="cue-box">
+          <strong>Self-Coaching Cue</strong>
+          "Sit and wait — let the ball come to me." Hands stay back until hips have already started.
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D3</span>
+          <span class="drill-name">Inside-Out Contact (Tee) — No More Casting</span>
+          <span class="drill-tag tag-hit">Hitting</span>
+        </div>
+        <p>Tees A, B, C — inside pitch location only. Coach Darian floats and corrects. Job is to drive the ball to the opposite gap. Knob leads, barrel follows. Two girls per tee: one hitting, one calling "inside-out" or "cast" on each rep.</p>
+        <div class="cue-box">
+          <strong>Coach Darian Cue</strong>
+          "Knob to the ball, not barrel to the ball." If you can see the barrel before contact, it's too early.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 — CAGE ROTATION 2 -->
+  <div class="phase-card open">
+    <div class="phase-card-head" onclick="toggle(this)">
+      <div class="phase-dot" style="background:#5aab3a"></div>
+      <div class="phase-card-title">Phase 3 — Cage Rotation 2</div>
+      <div class="phase-time-badge">0:45–1:07 · 22 min · All 12</div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="phase-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Groups cycle forward one station. Drills escalate in live-pitch pressure — mechanics first, now add the count.</p>
+      <div class="rotation-grid">
+        <div class="rotation-lane">
+          <div class="lane-label">Lane 1 — Coach Mo</div>
+          <div class="lane-name">Two-Strike Approach</div>
+          <div class="lane-detail">3 girls rotating · Count starts 0-2<br>Protect, shorten, fight off</div>
+        </div>
+        <div class="rotation-lane">
+          <div class="lane-label">Lane 2 — Self-Directed</div>
+          <div class="lane-name">Dropped Ball Extension Finish</div>
+          <div class="lane-detail">3 girls · Tennis ball drill<br>Extension + balanced finish</div>
+        </div>
+        <div class="rotation-lane">
+          <div class="lane-label">Tees A / B / C — Coach Darian</div>
+          <div class="lane-name">High / Low Location Adjust</div>
+          <div class="lane-detail">2 girls per tee · Tee alternates height<br>Barrel control, not just power</div>
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D4</span>
+          <span class="drill-name">Two-Strike Approach — Live BP</span>
+          <span class="drill-tag tag-hit">Hitting</span>
+        </div>
+        <p>Same live BP format — Coach Mo, 8–10 pitches — but every at-bat starts 0-2. The mental frame shifts completely. No longer hunting; now surviving. Shorten the swing, widen the zone, put the ball in play. Tournament at-bats don't always start in hitter's counts — this closes the gap between practice swings and pressure swings.</p>
+        <div class="cue-box">
+          <strong>Coach Mo Cue</strong>
+          "You're not trying to hit a homer. You're trying to make the pitcher make another throw." Survival is the win here.
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D5</span>
+          <span class="drill-name">Dropped Ball Extension Finish</span>
+          <span class="drill-tag tag-hit">Hitting</span>
+        </div>
+        <p>Partner drops tennis ball; hitter focuses entirely on extension through contact and a full, balanced finish. After a two-strike session of choking up and protecting, they need to remember what full extension feels like. Alternating between short (two-strike) and full (this drill) in the same cage block builds both muscle memories without erasing either.</p>
+        <div class="cue-box">
+          <strong>Self-Coaching Cue</strong>
+          "Finish tall." If you're bent at the waist at the finish, the barrel quit early.
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D6</span>
+          <span class="drill-name">High / Low Location Adjust (Tee)</span>
+          <span class="drill-tag tag-hit">Hitting</span>
+        </div>
+        <p>Tee partner alternates the height — one rep high, one rep low — without telling the hitter in advance. Hitter must read and adjust stance and contact point. Builds barrel control that survives pitch-to-pitch variation in a tournament. Coach Darian corrects posture collapse on low pitches.</p>
+        <div class="cue-box">
+          <strong>Coach Darian Cue</strong>
+          "Hips lead regardless of height. Low pitch means longer path, not a dropped chin."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 — BUNTING -->
+  <div class="phase-card open">
+    <div class="phase-card-head" onclick="toggle(this)">
+      <div class="phase-dot" style="background:#b07cf0"></div>
+      <div class="phase-card-title">Phase 4 — Bunting (Drill 3 / Transition)</div>
+      <div class="phase-time-badge">1:07–1:15 · 8 min · Both Groups</div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="phase-body">
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D7</span>
+          <span class="drill-name">Sacrifice + Push Bunt — Game Situation Attached</span>
+          <span class="drill-tag tag-bunt">Bunting</span>
+        </div>
+        <p>All 12 together. Always Drill 3 — the bridge from cages to field. This week's game situation: runner on second, no outs. Half the girls practice the sacrifice; half practice the push bunt to the third-base side to make the third baseman field it. Two reps each, then flip.</p>
+        <p>In a tournament you might only get one clean shot at this all weekend. Run it like it counts.</p>
+        <div class="cue-box">
+          <strong>Both Coaches</strong>
+          "Angle the barrel before the pitch comes. You don't have time to set up mid-delivery." Eyes on the top half of the ball.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 5 — FIELDING -->
+  <div class="phase-card open">
+    <div class="phase-card-head" onclick="toggle(this)">
+      <div class="phase-dot" style="background:#5BC8E8"></div>
+      <div class="phase-card-title">Phase 5 — Fielding Fundamentals</div>
+      <div class="phase-time-badge">1:15–1:35 · 20 min · Split 6+6</div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="phase-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Split the 12 into two groups of 6. One coach per group. 70×40 space — cones as bases at 40 feet.</p>
+      <div class="split-grid">
+        <div class="split-group">
+          <div class="split-label">Group A — Coach Darian</div>
+          <strong style="font-size:.9rem;">Rapid-Fire Grounders (Footwork First)</strong>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:5px;">High-rep grounders. Call footwork corrections before glove corrections. Every time.</p>
+        </div>
+        <div class="split-group">
+          <div class="split-label">Group B — Coach Mo</div>
+          <strong style="font-size:.9rem;">Short Hop Partner Drill</strong>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:5px;">20+ reps each. Partners 20 feet apart, throwing short hops intentionally. Hands soft, feet set before the catch.</p>
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D8</span>
+          <span class="drill-name">Rapid-Fire Grounders — Footwork First</span>
+          <span class="drill-tag tag-field">Fielding</span>
+        </div>
+        <p>Coach rolls/throws grounders in rapid succession. Between each, she resets her feet. Rule: if your feet aren't set when the ball gets to you, that rep doesn't count. Target 20+ reps per girl in 10 minutes. Focus this week on crossover step and charge angle — too many girls are catching balls at their feet instead of out in front.</p>
+        <div class="cue-box">
+          <strong>Coach Darian Cue</strong>
+          "Feet first, then glove. Always. If your feet are wrong, your glove can't save you."
+        </div>
+      </div>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D9</span>
+          <span class="drill-name">Short Hop Partner Drill — Soft Hands</span>
+          <span class="drill-tag tag-field">Fielding</span>
+        </div>
+        <p>Partners 20 feet apart. Thrower intentionally creates a short hop — no easy catches. Fielder works: set feet before the ball arrives, give with the hands at contact, frame the catch cleanly. 20+ reps each. Switch roles at the halfway point.</p>
+        <p>This is scar-tissue work. Short hops are where tournament errors happen because girls panic and go stiff. Volume here builds the reflex so the hands go soft automatically.</p>
+        <div class="cue-box">
+          <strong>Coach Mo Cue</strong>
+          "Soft hands means giving, not grabbing. Reach toward it, then let the ball come to you."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 6 — GAME IQ -->
+  <div class="phase-card open">
+    <div class="phase-card-head" onclick="toggle(this)">
+      <div class="phase-dot" style="background:#e05a8a"></div>
+      <div class="phase-card-title">Phase 6 — Game Situation IQ</div>
+      <div class="phase-time-badge">1:35–2:00 · 25 min · All 12</div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="phase-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">All 12 together. Format: <strong>"What Do You Do?" Quiz + Walk-Through.</strong> Coach calls a situation, girls answer, then walk it on the field with cones so the read lives in their feet — not just their heads. Tournament-relevant scenarios only.</p>
+      <div class="drill">
+        <div class="drill-header">
+          <span class="drill-num">D10</span>
+          <span class="drill-name">"What Do You Do?" — Tournament Scenario Quiz</span>
+          <span class="drill-tag tag-iq">Game IQ</span>
+        </div>
+        <p>Coach calls a situation out loud. All 12 girls answer (thumbs up/down, hand signal, or shout). Walk through 5–6 scenarios at game speed. Discuss the "why," not just the "what." Close every practice with this.</p>
+      </div>
+
+      <div class="scenario">
+        <div class="scenario-q"><span class="qnum">1</span>Runner on 1st, 1 out. Hard grounder to SS. What does 2B do?</div>
+        <div class="scenario-a"><strong>Answer:</strong> Cover 2B immediately, receive the throw for the force. Don't watch the play — move. Common mistake: girls stand and watch instead of reacting to their assignment.</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q"><span class="qnum">2</span>Runners on 1st and 3rd, 1 out. Short fly ball to LF drops in. Where does the ball go?</div>
+        <div class="scenario-a"><strong>Answer:</strong> Runner on 3rd scores. LF throws to 2B cutoff, hold the runner from 1st at 2nd. Throwing home late after the run scores is a free base — don't do it.</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q"><span class="qnum">3</span>Runner on 2nd, no outs. Pop-up in shallow CF. Two fielders can make it. Who calls it?</div>
+        <div class="scenario-a"><strong>Answer:</strong> CF has priority on all outfield pop-ups. SS/2B yield unless CF can't reach. The call must be loud and early: <em>"I got it! I got it!"</em> Silence = crash.</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q"><span class="qnum">4</span>0-2 count, runner stealing 2nd. Pitch is in the dirt. What does the runner on 2nd do?</div>
+        <div class="scenario-a"><strong>Answer:</strong> Stay — don't steal 3rd on a passed ball with two strikes. The defense is expecting aggression. Wait for the clean opportunity.</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q"><span class="qnum">5</span>You're at SS. Runner on 3rd, 1 out, infield in. Hard shot to you. Where does it go?</div>
+        <div class="scenario-a"><strong>Answer:</strong> Check the runner — if she hasn't broken, throw to 1B for the out. If she breaks early and you can beat her, go home. The read must be instant: feet tell you before your eyes do.</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q"><span class="qnum">6</span>Fly ball to RF, runner on 1st tagging up. Where does CF go?</div>
+        <div class="scenario-a"><strong>Answer:</strong> CF backs up RF. Every outfield ball — someone backs up. No exceptions. If RF drops it, you're the difference between one base and a disaster.</div>
+      </div>
+
+      <div class="cue-box" style="margin-top:14px;">
+        <strong>Close Every Practice With This</strong>
+        Last thing they hear before they walk out: "You solved it." Name one scenario, one girl who read it right. Specific praise, specific rep. They'll replay it on the drive home — that's the point.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>KC Diamonds — 14U Jr</strong> &nbsp;·&nbsp; Week 2 Practice Plan &nbsp;·&nbsp; Coach Darian Frost + Coach Mo Zahabi<br>
+  <span style="font-size:.7rem;margin-top:4px;display:block;">Tournament Week · Keep it sharp, keep it smart · 12 girls, 2 hours, zero wasted reps</span>
+</footer>
+
+<script>
+  function toggle(head) {
+    head.closest('.phase-card').classList.toggle('open');
+  }
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+</script>
+</body>
+</html>
