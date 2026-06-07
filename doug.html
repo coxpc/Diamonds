@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hit Better. Know Why.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5C842;
+    --navy: #0D1B2A;
+    --red: #E63946;
+    --slate: #1C2E40;
+    --light: #F0EDE6;
+    --muted: #8899A6;
+    --card: #162332;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--light);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  header {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 2rem 1.5rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  .diamond-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    animation: spin-slow 12s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* Topic card */
+  .topic-card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid rgba(245,200,66,0.15);
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .topic-card:nth-child(2) { animation-delay: 0.1s; }
+  .topic-card:nth-child(3) { animation-delay: 0.2s; }
+  .topic-card:nth-child(4) { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .topic-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.4rem 1.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .topic-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--gold);
+    line-height: 1;
+    min-width: 2.5rem;
+  }
+
+  .topic-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.3rem, 4vw, 1.75rem);
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    color: var(--light);
+  }
+
+  .topic-title span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  /* View toggle tabs */
+  .view-tabs {
+    display: flex;
+    gap: 0;
+    padding: 1rem 1.6rem 0;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: 1.5px solid rgba(245,200,66,0.25);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.45rem 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:first-child { border-radius: 8px 0 0 8px; }
+  .tab-btn:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+
+  .tab-btn.active {
+    background: var(--gold);
+    color: var(--navy);
+    border-color: var(--gold);
+  }
+
+  .tab-btn:hover:not(.active) {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* Content panels */
+  .tab-content {
+    padding: 1.5rem 1.6rem 1.8rem;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Simple panel */
+  .simple-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    color: var(--gold);
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.03em;
+  }
+
+  .simple-body {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #cdd8e0;
+  }
+
+  .simple-body strong { color: var(--gold); }
+
+  /* Detailed panel */
+  .detail-section {
+    margin-bottom: 1.4rem;
+  }
+
+  .detail-section:last-child { margin-bottom: 0; }
+
+  .detail-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .detail-text {
+    font-size: 0.97rem;
+    line-height: 1.75;
+    color: #b8ccd8;
+  }
+
+  .detail-text strong { color: var(--light); }
+
+  /* Analogy callout */
+  .analogy-box {
+    background: rgba(245,200,66,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 0.9rem 1.1rem;
+    margin-top: 1rem;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: #cdd8e0;
+    font-style: italic;
+  }
+
+  .analogy-box::before {
+    content: '💡 Analogy — ';
+    font-style: normal;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-style: normal;
+  }
+
+  /* Diagram container */
+  .diagram-wrap {
+    background: rgba(0,0,0,0.25);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 1.5rem;
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .diagram-title {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.06em;
+    font-size: 1rem;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Key points list */
+  .key-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: 0.8rem;
+  }
+
+  .key-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: #b8ccd8;
+    line-height: 1.6;
+  }
+
+  .key-points li::before {
+    content: '▸';
+    color: var(--gold);
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+
+  /* Bad vs Good comparison */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 500px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-box {
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .compare-box.bad {
+    background: rgba(230,57,70,0.12);
+    border: 1px solid rgba(230,57,70,0.3);
+  }
+
+  .compare-box.good {
+    background: rgba(80,200,120,0.1);
+    border: 1px solid rgba(80,200,120,0.3);
+  }
+
+  .compare-box .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .compare-box.bad .label { color: var(--red); }
+  .compare-box.good .label { color: #50C878; }
+
+  .compare-box p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #b8ccd8;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 1.2rem 0;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="diamond-icon">⬡</span>
+  <h1>Hit Better. Know Why.</h1>
+  <p>Batting Mechanics Guide · 14–16 · Softball</p>
+</header>
+
+<div class="container">
+
+  <!-- CARD 1: STRIDING -->
+  <div class="topic-card">
+    <div class="topic-header">
+      <div class="topic-num">01</div>
+      <div class="topic-title">
+        <span>The Problem</span>
+        Why Striding Hurts Your Swing
+      </div>
+    </div>
+    <div class="view-tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'stride-simple')">Simple</button>
+      <button class="tab-btn" onclick="switchTab(this, 'stride-detail')">Detailed</button>
+    </div>
+    <div class="tab-content">
+      <div class="panel active" id="stride-simple">
+        <div class="simple-big">A big stride steals your power before you even swing.</div>
+        <p class="simple-body">
+          When you stride too far, your weight shifts <strong>forward too early</strong> — your body is already moving toward the pitcher before the ball even leaves her hand. Now you're committed. Off-speed pitch? Curveball? You're way out in front and all you can do is wave at it.
+        </p>
+        <div class="analogy-box">
+          Think of it like trying to punch someone while already falling toward them — your fist might land, but there's nothing behind it. Real power comes from staying back and exploding forward at the right moment.
+        </div>
+      </div>
+      <div class="panel" id="stride-detail">
+        <div class="detail-section">
+          <div class="detail-label">What Actually Happens</div>
+          <p class="detail-text">Striding is when a batter takes a large forward step toward the pitcher as part of their load. The problem isn't the step — it's what the step does to your <strong>weight distribution and timing</strong>. A big stride forces your hips to open prematurely, your weight dumps forward, and you lose the tension in your core that generates bat speed.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">Why It Kills Timing</div>
+          <p class="detail-text">At the 14–16 level, pitchers are throwing changeups, drops, and rises. A big stride locks you into one timing window. The moment your front foot lands heavy, your swing is basically already triggered — your brain committed. Against an off-speed pitch, your stride has already eaten your reaction time.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">The Fix: Soft Stride or Toe Tap</div>
+          <ul class="key-points">
+            <li>Keep the stride short (4–6 inches) or replace it with a simple toe tap to trigger timing.</li>
+            <li>Land on the ball of your front foot softly — don't "stomp" your weight forward.</li>
+            <li>Your weight should stay centered or slightly back until <em>you decide to swing</em>.</li>
+            <li>Hip rotation drives power — not forward momentum. Stay back, rotate hard.</li>
+          </ul>
+        </div>
+        <div class="compare-grid">
+          <div class="compare-box bad">
+            <div class="label">❌ Big Stride</div>
+            <p>Weight dumps forward early, hips open too soon, bat drag, weak contact, helpless on off-speed.</p>
+          </div>
+          <div class="compare-box good">
+            <div class="label">✅ Controlled Load</div>
+            <p>Weight stays back, hips stay closed until launch, explosive rotation, adjustable to any pitch speed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: OPEN STANCE -->
+  <div class="topic-card">
+    <div class="topic-header">
+      <div class="topic-num">02</div>
+      <div class="topic-title">
+        <span>The Advantage</span>
+        Why an Open Stance Works
+      </div>
+    </div>
+    <div class="view-tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'open-simple')">Simple</button>
+      <button class="tab-btn" onclick="switchTab(this, 'open-detail')">Detailed</button>
+    </div>
+    <div class="tab-content">
+      <div class="panel active" id="open-simple">
+        <div class="simple-big">An open stance lets you see the ball longer and react faster.</div>
+        <p class="simple-body">
+          When your front foot is pulled back slightly from the plate, <strong>both eyes face the pitcher more directly</strong>. You're not turning your head as far to track the ball — which means you pick it up sooner out of the hand. That split second is everything at this level.
+        </p>
+        <div class="analogy-box">
+          It's like watching a movie. If you're sitting dead-center in the theater, you see the full screen easily. Sit too far to the side and you're craning your neck — you'll miss things. An open stance puts you in the center seat.
+        </div>
+      </div>
+      <div class="panel" id="open-detail">
+        <div class="detail-section">
+          <div class="detail-label">What "Open Stance" Means</div>
+          <p class="detail-text">In an open stance, the <strong>front foot is pulled back</strong> several inches away from the plate relative to the back foot. This rotates the hips slightly toward the pitcher before the pitch even arrives. It does not mean your feet are wide apart — it means your body angle is more "open" to face the field.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">Vision Advantage</div>
+          <p class="detail-text">Human eyes work best when both are tracking together. In a square or closed stance, batters must rotate their head significantly to pick up the ball's release. An open stance aligns both eyes more naturally toward the pitcher, giving you <strong>earlier pitch recognition</strong> — you see spin, location, and speed sooner.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">Hip Turn & Power</div>
+          <p class="detail-text">Because the hips are already partially open, the swing rotation feels more natural and complete. For hitters who struggle to "clear their hips" on an inside pitch, an open stance removes that barrier — your body isn't fighting itself to rotate through the ball.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">Foot Placement — Right-Handed Batter</div>
+          <div class="diagram-wrap">
+            <div class="diagram-title">Open Stance vs Square Stance</div>
+            <svg viewBox="0 0 460 310" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;">
+              <!-- Background -->
+              <rect width="460" height="310" fill="#0d1b2a" rx="10"/>
+
+              <!-- Left diagram: Square Stance -->
+              <text x="115" y="28" text-anchor="middle" fill="#8899A6" font-size="11" font-family="DM Sans, sans-serif" font-weight="700" letter-spacing="1">SQUARE STANCE</text>
+
+              <!-- Batter box outline left -->
+              <rect x="40" y="38" width="150" height="240" rx="6" fill="none" stroke="#1c2e40" stroke-width="1.5"/>
+
+              <!-- Plate left -->
+              <polygon points="115,248 95,258 90,270 115,278 140,270 135,258" fill="#3a4a5a" stroke="#5a6a7a" stroke-width="1"/>
+              <text x="115" y="295" text-anchor="middle" fill="#5a6a7a" font-size="9" font-family="DM Sans, sans-serif">HOME PLATE</text>
+
+              <!-- Pitcher direction arrow left -->
+              <line x1="115" y1="55" x2="115" y2="40" stroke="#8899A6" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <polygon points="115,36 111,44 119,44" fill="#8899A6"/>
+              <text x="115" y="33" text-anchor="middle" fill="#8899A6" font-size="9" font-family="DM Sans, sans-serif">PITCHER</text>
+
+              <!-- Back foot (right) - square -->
+              <ellipse cx="115" cy="210" rx="26" ry="13" fill="#1C3A5E" stroke="#4a7aaa" stroke-width="2"/>
+              <text x="115" y="214" text-anchor="middle" fill="#a0c0e0" font-size="9" font-family="DM Sans, sans-serif" font-weight="600">BACK FOOT</text>
+
+              <!-- Front foot (left) - square, even -->
+              <ellipse cx="115" cy="155" rx="26" ry="13" fill="#1C3A5E" stroke="#4a7aaa" stroke-width="2"/>
+              <text x="115" y="159" text-anchor="middle" fill="#a0c0e0" font-size="9" font-family="DM Sans, sans-serif" font-weight="600">FRONT FOOT</text>
+
+              <!-- Alignment line -->
+              <line x1="115" y1="168" x2="115" y2="197" stroke="#4a7aaa" stroke-width="1" stroke-dasharray="4,3"/>
+              <text x="148" y="185" fill="#4a7aaa" font-size="8.5" font-family="DM Sans, sans-serif">aligned</text>
+
+              <!-- Eye angle indicator left -->
+              <line x1="105" y1="120" x2="115" y2="50" stroke="#8899A6" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+              <line x1="125" y1="120" x2="115" y2="50" stroke="#8899A6" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+              <text x="115" y="117" text-anchor="middle" fill="#8899A6" font-size="8.5" font-family="DM Sans, sans-serif">head turns</text>
+              <text x="115" y="127" text-anchor="middle" fill="#8899A6" font-size="8.5" font-family="DM Sans, sans-serif">to find ball</text>
+
+              <!-- Divider -->
+              <line x1="230" y1="30" x2="230" y2="290" stroke="#1C2E40" stroke-width="2"/>
+
+              <!-- Right diagram: Open Stance -->
+              <text x="340" y="28" text-anchor="middle" fill="#F5C842" font-size="11" font-family="DM Sans, sans-serif" font-weight="700" letter-spacing="1">OPEN STANCE ✓</text>
+
+              <!-- Batter box outline right -->
+              <rect x="265" y="38" width="150" height="240" rx="6" fill="none" stroke="#1c2e40" stroke-width="1.5"/>
+
+              <!-- Plate right -->
+              <polygon points="340,248 320,258 315,270 340,278 365,270 360,258" fill="#3a4a5a" stroke="#5a6a7a" stroke-width="1"/>
+              <text x="340" y="295" text-anchor="middle" fill="#5a6a7a" font-size="9" font-family="DM Sans, sans-serif">HOME PLATE</text>
+
+              <!-- Pitcher direction arrow right -->
+              <line x1="340" y1="55" x2="340" y2="40" stroke="#F5C842" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <polygon points="340,36 336,44 344,44" fill="#F5C842"/>
+              <text x="340" y="33" text-anchor="middle" fill="#F5C842" font-size="9" font-family="DM Sans, sans-serif">PITCHER</text>
+
+              <!-- Back foot (right) -->
+              <ellipse cx="340" cy="210" rx="26" ry="13" fill="#1C3A5E" stroke="#F5C842" stroke-width="2"/>
+              <text x="340" y="214" text-anchor="middle" fill="#F5C842" font-size="9" font-family="DM Sans, sans-serif" font-weight="600">BACK FOOT</text>
+
+              <!-- Front foot (left) - pulled BACK/open, shifted away from plate -->
+              <ellipse cx="322" cy="152" rx="26" ry="13" fill="#0d2e1a" stroke="#50C878" stroke-width="2"/>
+              <text x="322" y="156" text-anchor="middle" fill="#50C878" font-size="9" font-family="DM Sans, sans-serif" font-weight="600">FRONT FOOT</text>
+
+              <!-- Offset arrow showing the step back -->
+              <line x1="340" y1="197" x2="325" y2="165" stroke="#50C878" stroke-width="1.5" stroke-dasharray="4,3"/>
+              <text x="358" y="182" fill="#50C878" font-size="8" font-family="DM Sans, sans-serif">pulled</text>
+              <text x="358" y="191" fill="#50C878" font-size="8" font-family="DM Sans, sans-serif">back</text>
+
+              <!-- Eye cone - wide, both eyes facing pitcher -->
+              <line x1="332" y1="118" x2="340" y2="50" stroke="#F5C842" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6"/>
+              <line x1="350" y1="118" x2="340" y2="50" stroke="#F5C842" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6"/>
+              <text x="340" y="115" text-anchor="middle" fill="#F5C842" font-size="8.5" font-family="DM Sans, sans-serif">both eyes</text>
+              <text x="340" y="125" text-anchor="middle" fill="#F5C842" font-size="8.5" font-family="DM Sans, sans-serif">on pitcher</text>
+
+              <!-- Legend -->
+              <rect x="40" y="300" width="10" height="6" fill="#4a7aaa" rx="1"/>
+              <text x="55" y="307" fill="#8899A6" font-size="8" font-family="DM Sans, sans-serif">Square foot alignment</text>
+              <rect x="265" y="300" width="10" height="6" fill="#50C878" rx="1"/>
+              <text x="280" y="307" fill="#8899A6" font-size="8" font-family="DM Sans, sans-serif">Open front foot position</text>
+            </svg>
+          </div>
+        </div>
+        <ul class="key-points" style="margin-top:1rem;">
+          <li>Front foot pulls back 4–8 inches from where it would be in a square stance.</li>
+          <li>Both feet still point comfortably toward the plate — don't point the front foot at the pitcher.</li>
+          <li>Weight stays balanced — this isn't a wide stance, just an angled one.</li>
+          <li>Hip rotation is natural and full, making it easier to drive the inside pitch.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: CLOSED STANCE / SHOWING BACK -->
+  <div class="topic-card">
+    <div class="topic-header">
+      <div class="topic-num">03</div>
+      <div class="topic-title">
+        <span>The Mistake</span>
+        Don't Show the Pitcher Your Back Shoulder
+      </div>
+    </div>
+    <div class="view-tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'closed-simple')">Simple</button>
+      <button class="tab-btn" onclick="switchTab(this, 'closed-detail')">Detailed</button>
+    </div>
+    <div class="tab-content">
+      <div class="panel active" id="closed-simple">
+        <div class="simple-big">A closed stance boxes you in — and the pitcher knows it.</div>
+        <p class="simple-body">
+          When your front foot crosses toward the plate and your body angles away, your back shoulder starts "showing" toward the pitcher. That means <strong>your hips are already half-closed</strong> before you even load. The result? You can't rotate fully — you're swinging in a box. Pitchers at this level will throw outside and watch you wave.
+        </p>
+        <div class="analogy-box">
+          Imagine trying to throw a punch while you're already turned sideways, facing a wall. Your elbow catches on the wall before you can fully extend. That's what a closed stance does to your swing — the wall is your own body.
+        </div>
+      </div>
+      <div class="panel" id="closed-detail">
+        <div class="detail-section">
+          <div class="detail-label">What "Showing Your Back Shoulder" Means</div>
+          <p class="detail-text">In a closed stance, the front foot steps <em>toward</em> the plate, angling the body away from the pitcher. This causes the back shoulder to rotate toward the pitcher prematurely, and the front hip to jam against your rotation path. <strong>You've essentially pre-rotated</strong> your body in the wrong direction before the pitch arrives.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">Why It Limits Power</div>
+          <p class="detail-text">Power in softball hitting is a <strong>kinetic chain</strong> — it flows from the ground up: legs → hips → core → shoulders → arms → bat. A closed stance breaks that chain at the hips. Your front side can't "open" properly through the zone because it's already fighting against its own starting position. The result is a short, armsy swing with no hip drive behind it.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">What Pitchers See & Exploit</div>
+          <p class="detail-text">A smart pitcher at this level <em>will notice</em> a closed stance. It telegraphs that you can't cover the outside corner well — your body is turned away from it. Expect a steady diet of outside pitches, which you'll either reach for weakly or miss entirely. A closed batter is also more susceptible to high-inside heat because the stance restricts your arms from extending on that plane.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="compare-grid">
+          <div class="compare-box bad">
+            <div class="label">❌ Closed Stance</div>
+            <p>Front foot crosses plate-side, back shoulder faces pitcher, hips locked, restricted rotation, weak on outside, exploited by smart pitchers.</p>
+          </div>
+          <div class="compare-box good">
+            <div class="label">✅ Open or Square Stance</div>
+            <p>Hips free to rotate fully, back shoulder stays back until swing is triggered, power path unobstructed, covers full strike zone.</p>
+          </div>
+        </div>
+        <div class="analogy-box" style="margin-top:1.2rem;">
+          Think of your swing like a coiled spring. An open/square stance lets you fully coil. A closed stance is like pinching one end of the spring before you even load it — you've already wasted half the energy before you uncoil.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4: EYE DOMINANCE -->
+  <div class="topic-card">
+    <div class="topic-header">
+      <div class="topic-num">04</div>
+      <div class="topic-title">
+        <span>Know Your Body</span>
+        Right Eye Dominant? Here's How to Stand
+      </div>
+    </div>
+    <div class="view-tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'eye-simple')">Simple</button>
+      <button class="tab-btn" onclick="switchTab(this, 'eye-detail')">Detailed</button>
+    </div>
+    <div class="tab-content">
+
+      <div class="panel active" id="eye-simple">
+        <div class="simple-big">Your right eye is your captain — give it the best view of the pitch.</div>
+        <p class="simple-body">
+          As a right-handed batter, your <strong>right eye is in the back</strong> — farther from the pitcher. If it's also your dominant eye, that's a problem: your strongest eye has the worst angle. The fix is a slight <strong>chin tuck toward your left shoulder</strong> and an <strong>open stance</strong>, which rotates your head just enough to bring that right eye forward and lock it onto the pitcher's release point.
+        </p>
+        <div class="analogy-box">
+          Think of your dominant eye like a sniper scope — it needs to be aimed directly at the target. If the scope is mounted sideways, even the best shooter misses. Adjusting your head angle is like re-mounting the scope so it points straight at the muzzle.
+        </div>
+      </div>
+
+      <div class="panel" id="eye-detail">
+        <div class="detail-section">
+          <div class="detail-label">What Eye Dominance Actually Means</div>
+          <p class="detail-text">Your <strong>dominant eye</strong> is the one your brain relies on more heavily when depth perception and fine tracking matter. It's not about which eye sees "better" — it's about which eye your brain trusts to judge distance and movement. When tracking a pitched ball, your dominant eye is doing the heavy lifting on reading spin and judging when the ball reaches the zone.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">The Cross-Dominance Problem</div>
+          <p class="detail-text">A right-handed batter naturally sets up with their <em>left side facing the pitcher</em>. That puts the <strong>left eye closer to the pitcher</strong> and the right eye tucked behind. For a right-eye dominant batter, this means your captain eye is riding the bench. Your weaker left eye is getting first look at every pitch, and your brain is playing catch-up to confirm what it sees. This is called <strong>cross-dominance</strong> — batting right but seeing better with the right eye — and it's more common than most players realize.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">The Adjustment: Head Tilt + Open Stance</div>
+          <p class="detail-text">Two small tweaks work together to solve this. First, <strong>tuck your chin toward your left (front) shoulder</strong> as you set up in the box. This rotates your head slightly so both eyes angle more directly toward the pitcher — and your right eye gets a cleaner sight line to the release point. Second, pair this with an <strong>open stance</strong> (front foot pulled back, as covered in Card 02). The open stance rotates your whole body slightly toward the pitcher, which multiplies the benefit of the head tilt. Together, they bring the dominant right eye into its optimal tracking position.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">Head Position Diagram</div>
+          <div class="diagram-wrap">
+            <div class="diagram-title">Right Eye Dominant — Head Alignment</div>
+            <svg viewBox="0 0 460 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;">
+              <rect width="460" height="320" fill="#0d1b2a" rx="10"/>
+
+              <!-- Labels -->
+              <text x="115" y="24" text-anchor="middle" fill="#E63946" font-size="10.5" font-family="DM Sans, sans-serif" font-weight="700" letter-spacing="1">❌ NEUTRAL HEAD</text>
+              <text x="340" y="24" text-anchor="middle" fill="#F5C842" font-size="10.5" font-family="DM Sans, sans-serif" font-weight="700" letter-spacing="1">✓ CHIN TUCKED</text>
+
+              <!-- Divider -->
+              <line x1="230" y1="32" x2="230" y2="300" stroke="#1C2E40" stroke-width="2"/>
+
+              <!-- ===== LEFT: Neutral head ===== -->
+              <!-- Pitcher arrow -->
+              <line x1="115" y1="50" x2="115" y2="38" stroke="#8899A6" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <polygon points="115,34 111,42 119,42" fill="#8899A6"/>
+              <text x="115" y="31" text-anchor="middle" fill="#8899A6" font-size="9" font-family="DM Sans, sans-serif">PITCHER</text>
+
+              <!-- Head circle -->
+              <circle cx="115" cy="105" r="36" fill="#162332" stroke="#4a6a8a" stroke-width="2"/>
+
+              <!-- Left eye (front, closer to pitcher) - weaker eye -->
+              <ellipse cx="102" cy="98" rx="7" ry="5" fill="#1C3A5E" stroke="#4a7aaa" stroke-width="1.5"/>
+              <circle cx="102" cy="98" r="3" fill="#7aaadd"/>
+              <text x="80" y="88" fill="#4a7aaa" font-size="8" font-family="DM Sans, sans-serif">L eye</text>
+
+              <!-- Right eye (back, tucked away) - dominant eye -->
+              <ellipse cx="128" cy="98" rx="7" ry="5" fill="#2a1a1a" stroke="#886666" stroke-width="1.5"/>
+              <circle cx="128" cy="98" r="3" fill="#aa7777"/>
+              <text x="132" y="88" fill="#886666" font-size="8" font-family="DM Sans, sans-serif">R eye</text>
+
+              <!-- Nose direction showing head facing right (away from pitcher) -->
+              <line x1="115" y1="108" x2="115" y2="118" stroke="#5a7a8a" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Sight lines from LEFT eye (weaker) — short, angled badly -->
+              <line x1="102" y1="93" x2="115" y2="38" stroke="#4a7aaa" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7"/>
+              <!-- Right eye sight line - long angle, blocked -->
+              <line x1="128" y1="93" x2="115" y2="38" stroke="#886666" stroke-width="1" stroke-dasharray="3,4" opacity="0.4"/>
+
+              <!-- "Dominant eye" label with X -->
+              <text x="115" y="158" text-anchor="middle" fill="#E63946" font-size="8.5" font-family="DM Sans, sans-serif">Dominant right eye</text>
+              <text x="115" y="169" text-anchor="middle" fill="#E63946" font-size="8.5" font-family="DM Sans, sans-serif">has worst angle</text>
+
+              <!-- Batter feet (square stance, neutral) -->
+              <ellipse cx="115" cy="230" rx="24" ry="11" fill="#1C3A5E" stroke="#4a7aaa" stroke-width="1.5"/>
+              <text x="115" y="234" text-anchor="middle" fill="#a0c0e0" font-size="8" font-family="DM Sans, sans-serif">BACK FOOT</text>
+              <ellipse cx="115" cy="195" rx="24" ry="11" fill="#1C3A5E" stroke="#4a7aaa" stroke-width="1.5"/>
+              <text x="115" y="199" text-anchor="middle" fill="#a0c0e0" font-size="8" font-family="DM Sans, sans-serif">FRONT FOOT</text>
+
+              <!-- Head to body connector -->
+              <line x1="115" y1="141" x2="115" y2="184" stroke="#2a3a4a" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- ===== RIGHT: Chin tucked, open stance ===== -->
+              <!-- Pitcher arrow -->
+              <line x1="340" y1="50" x2="340" y2="38" stroke="#F5C842" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <polygon points="340,34 336,42 344,42" fill="#F5C842"/>
+              <text x="340" y="31" text-anchor="middle" fill="#F5C842" font-size="9" font-family="DM Sans, sans-serif">PITCHER</text>
+
+              <!-- Head circle — slightly rotated to left (chin tuck) -->
+              <circle cx="340" cy="105" r="36" fill="#162332" stroke="#F5C842" stroke-width="2"/>
+
+              <!-- Left eye — now less dominant -->
+              <ellipse cx="326" cy="101" rx="7" ry="5" fill="#1C3A5E" stroke="#4a7aaa" stroke-width="1.5"/>
+              <circle cx="326" cy="101" r="3" fill="#7aaadd"/>
+              <text x="304" y="91" fill="#4a7aaa" font-size="8" font-family="DM Sans, sans-serif">L eye</text>
+
+              <!-- Right eye (dominant) — now brought forward by chin tuck -->
+              <ellipse cx="352" cy="97" rx="7" ry="5" fill="#0d2e1a" stroke="#50C878" stroke-width="2"/>
+              <circle cx="352" cy="97" r="3.5" fill="#50C878"/>
+              <text x="356" y="87" fill="#50C878" font-size="8" font-family="DM Sans, sans-serif" font-weight="700">R eye ★</text>
+
+              <!-- Chin tuck arrow on head -->
+              <path d="M 340 118 Q 328 122 320 116" fill="none" stroke="#F5C842" stroke-width="1.5" stroke-dasharray="3,2"/>
+              <polygon points="320,116 325,112 324,119" fill="#F5C842"/>
+              <text x="295" y="132" fill="#F5C842" font-size="8" font-family="DM Sans, sans-serif">chin tuck</text>
+
+              <!-- Dominant right eye sight line — clean, direct -->
+              <line x1="352" y1="92" x2="340" y2="38" stroke="#50C878" stroke-width="2" stroke-dasharray="5,3" opacity="0.9"/>
+              <!-- Left eye sight line -->
+              <line x1="326" y1="96" x2="340" y2="38" stroke="#4a7aaa" stroke-width="1" stroke-dasharray="3,4" opacity="0.5"/>
+
+              <!-- "Dominant eye" label with check -->
+              <text x="340" y="158" text-anchor="middle" fill="#50C878" font-size="8.5" font-family="DM Sans, sans-serif">Dominant right eye</text>
+              <text x="340" y="169" text-anchor="middle" fill="#50C878" font-size="8.5" font-family="DM Sans, sans-serif">has direct sight line</text>
+
+              <!-- Batter feet — open stance -->
+              <ellipse cx="340" cy="230" rx="24" ry="11" fill="#1C3A5E" stroke="#F5C842" stroke-width="1.5"/>
+              <text x="340" y="234" text-anchor="middle" fill="#F5C842" font-size="8" font-family="DM Sans, sans-serif">BACK FOOT</text>
+              <!-- Front foot pulled back (open) -->
+              <ellipse cx="324" cy="193" rx="24" ry="11" fill="#0d2e1a" stroke="#50C878" stroke-width="1.5"/>
+              <text x="324" y="197" text-anchor="middle" fill="#50C878" font-size="8" font-family="DM Sans, sans-serif">FRONT FOOT</text>
+
+              <!-- Head to body connector -->
+              <line x1="340" y1="141" x2="335" y2="182" stroke="#2a3a4a" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- Legend bottom -->
+              <circle cx="50" cy="308" r="4" fill="#50C878"/>
+              <text x="58" y="312" fill="#8899A6" font-size="8" font-family="DM Sans, sans-serif">Dominant eye sight line</text>
+              <circle cx="265" cy="308" r="4" fill="#4a7aaa"/>
+              <text x="273" y="312" fill="#8899A6" font-size="8" font-family="DM Sans, sans-serif">Non-dominant eye</text>
+            </svg>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">How to Check Your Dominant Eye</div>
+          <ul class="key-points">
+            <li>Point your finger at a distant object with both eyes open.</li>
+            <li>Close your left eye — if your finger stays on the object, you're <strong>right eye dominant</strong>.</li>
+            <li>If your finger jumps off the object when you close your left eye, you're left eye dominant.</li>
+            <li>Do this test before your next practice so you know exactly what you're working with.</li>
+          </ul>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-section">
+          <div class="detail-label">The Full Checklist for Right-Eye Dominant Batters</div>
+          <ul class="key-points">
+            <li><strong>Open stance</strong> — pull the front foot back to rotate your body slightly toward the pitcher.</li>
+            <li><strong>Chin toward left shoulder</strong> — tuck it as you set up, not as a reaction to the pitch.</li>
+            <li><strong>Both eyes forward</strong> — you should feel like you're looking almost face-on at the pitcher, not in profile.</li>
+            <li><strong>Don't overdo it</strong> — a 10–15° head rotation is enough. You're not trying to face the pitcher fully; you're just giving the right eye its lane.</li>
+          </ul>
+        </div>
+        <div class="analogy-box">
+          Your two eyes work like two cameras feeding one screen. When your dominant eye has a clear angle, the image is crisp and the depth is accurate. When it's blocked or angled away, your brain is stitching together a blurry, delayed picture — and trying to hit a 60 mph drop ball with bad footage is a losing game.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Built for the dugout · Softball Batting Mechanics Guide
+</footer>
+
+<script>
+  function switchTab(btn, panelId) {
+    // Find parent card
+    const card = btn.closest('.topic-card');
+    // Deactivate all tabs in this card
+    card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    // Hide all panels in this card
+    card.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    // Activate clicked tab and matching panel
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+</script>
+</body>
+</html>
